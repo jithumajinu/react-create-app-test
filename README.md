@@ -1,48 +1,112 @@
-# Getting Started with Create React App
+## A react-typescript boilerplate including
 
-npx create-react-app --scripts-version 5.0.0 my-app --template typescript
+- `prettier`
+- `eslint`
+- `lint-staged`
+- `husky`
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# ![React Typescript Setup](https://img.shields.io/badge/React--Typescript-044289?style=flat)
 
-## Available Scripts
+[Docs](https://react-typescript-cheatsheet.netlify.app/docs/basic/setup/)
 
-In the project directory, you can run:
+- TypeScript is a strongly typed programming language that builds on JavaScript, giving you better tooling at any scale.
+- Also a powerful compiler tool which converts typescript to javascript
+- It also adds feature of idetifying errors at compile time rather than scratching our head at runtime🥲
 
-### `npm start`
+# ![Prettier](https://img.shields.io/badge/Prettier-%23DB7093?style=flat)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+[Docs](https://prettier.io/)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- An Code formatter
+- Supports many languages
+- Generate prettier rules [here](https://prettier.io/playground/)
 
-### `npm test`
+# ![Eslint](https://img.shields.io/badge/Eslint-4B32C3?style=flat)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+[Docs](https://eslint.org/)
 
-### `npm run build`
+- Find and fix problems in your JavaScript code making code more consistent.
+- We already have `eslint` as an inner-dependency from react-scripts
+- To init eslint config run & choose options accordingly
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+  ```
+  npx eslint --init
+  ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+<!-- ### Prettier plugin
+- We can ask eslint to work with prettier using   ```eslint-config-prettier extension``` -->
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# ![Lint-Staged](https://img.shields.io/badge/Lint--Staged-49C41C?style=flat)
 
-### `npm run eject`
+[Docs](https://www.npmjs.com/package/lint-staged)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- Linting makes more sense when run before committing your code. By doing so you can ensure no errors go into the repository and enforce code style.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# ![Husky](https://img.shields.io/badge/Husky-yellow?style=flat)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+[Docs](https://www.npmjs.com/package/husky)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- Whenever we inti Git in our project, it automatically comes with features called hooks.
+- hooks ex: `pre-commit`, `pre-push`, etc.
+- If we want to ensure before we actually create a commit using the `git commit`, that our code was properly `linted` and `formatted`, we could write a `pre-commit` Git hook.
 
-## Learn More
+# ![Installation](https://img.shields.io/badge/Installation-38427A?style=flat)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Clone / Download [this](https://github.com/ShubhamSj07/react-typescript-boilerplate) repo.
+2. Inside the project open a terminal and run:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+   ```
+   yarn install
+   ```
+
+   This will install all the project dependencies.
+
+3. To start the development server run:
+
+   ```
+   yarn start
+   ```
+
+4. Prettier commands
+
+   - Run the below command to get a list of all unformatted code in the project.
+
+     ```
+     yarn run format:check
+     ```
+
+   - Run the below command to fix the unformatted code!
+
+     ```
+     yarn run format:fix
+     ```
+
+5. Eslint commands
+
+   - We can run the below script present in package.json
+
+     ```
+     yarn run lint
+     ```
+
+6. Run parallel commands at once using [concurrently](https://www.npmjs.com/package/concurrently)
+
+- #### Syntax
+
+  ```
+   concurrently \"yarn 1st-cmd\" \"yarn run  2st-cmd\" \"yarn run nth-cmd\""
+  ```
+
+7. Another great thing about lint-staged is that it automatically does the git add on the modified files. So, if we are doing prettier — write or eslint — fix, we don't have to stage the changes manually.
+
+- #### We do format:fix & run our validate script on the staged files
+
+- #### After `git add .` and `git commit -m "message"`
+
+  the lint-staged kicks in and runs🚀
+
+# ![Author](https://img.shields.io/badge/Author-FF3031?style=flat)
+
+[![Twitter](https://img.shields.io/badge/follow-%40shubhamsj077-1DA1F2?style=flat&logo=Twitter)](https://twitter.com/shubhamsj077)
+
+[![LinkedIn](https://img.shields.io/badge/connect-%40shubhamjadhav-%230077B5?style=flat&logo=LinkedIn)](https://www.linkedin.com/in/shubham-jadhav-77a588192/)
