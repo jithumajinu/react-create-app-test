@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
-
+import { Link } from "react-router-dom";
+import Header from './pages/Header';
 export interface DefaultLayoutProps {
     children: React.ReactNode;
     currentPage?: number;
@@ -13,11 +14,11 @@ export const DefaultLayout: FC<DefaultLayoutProps> = (props) => {
   return (
     <>
       <div className="wrapper d-flex flex-column min-vh-100">
-        header <h1>Hello, React Router!</h1>
+      <Header/>
+      --------------------------------------------
         <div className="body flex-grow-1 px-3">
           {children}
         </div>
-       Footer
       </div>
     </>
   )

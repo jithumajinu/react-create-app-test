@@ -6,7 +6,10 @@ import "./index.css";
 
 const container = document.getElementById('root');
 const root = createRoot(container!); // createRoot(container!) if you use TypeScript
-root.render(<App />);
+
+const element: HTMLElement | null = document.getElementById('root');
+
+root.render(<App element={element}  />);
 
 
 // If you want to start measuring performance in your app, pass a function
