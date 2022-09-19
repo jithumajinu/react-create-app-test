@@ -8,7 +8,7 @@
 .frame .rs-sidenav {
   flex: 1 1 auto;
   transition: none !important;
-  border-top: 1px solid #34c3ff;
+  border-top: 1px solid '#f2f2f5';
   width: 100%;
 }
 .frame .rs-content {
@@ -21,11 +21,11 @@
   margin-bottom: 0;
 }
 .frame .nav-toggle {
-  border-top: 1px solid #34c3ff;
+  border-top: 1px solid '#f2f2f5';
 }
 .frame .rs-sidenav-item.active,
 .frame .rs-dropdown-item.active {
-  color: #34c3ff !important;
+  color: '#3498ff' !important;
 }
 .frame .rs-sidenav-item-icon,
 .frame .rs-dropdown-item-icon {
