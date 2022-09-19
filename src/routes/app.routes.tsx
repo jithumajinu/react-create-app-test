@@ -3,13 +3,13 @@ import { Route, RouteProps } from "react-router-dom";
 
 import Home from "../component/pages/AtHome";
 import Login from "../component/pages/Login";
-import Dashboard from "../component/pages/Dashboard"
+
 
 const AppRoutes: React.FC<RouteProps> = () => {
   return (
     <>
-      <Route path="/dashboard" element={<Dashboard />} />
-
+    
+  hi
       {/* <Route path="*" navigator="/dashboard" /> */}
     </>
   );

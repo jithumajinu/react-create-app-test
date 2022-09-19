@@ -1,61 +1,37 @@
-// <reference path="path/types.d.ts" />
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-} from "react-router-dom";
-// import FaSun from "./assests/images/FaSun.png";
-import Home from "./component/pages/AtHome";
-import Login from "./component/pages/Login";
-import Dashboard from "./component/pages/Dashboard";
-import "./App.css";
-import { DefaultLayout } from "./component/DefaultLayout";
-//import { AuthProvider } from "./component/contexts/AuthContext";
-import {AuthProvider} from "./component/contexts/auth";
-// import MainRoutes from "./routes";
-import { useAuth } from "./component/contexts/auth";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './component/pages/AtHome';
+import Login from './component/pages/Login';
+import Error404Page from './pages/authentication/404';
+import { DefaultLayout } from './layouts/DefaultLayout';
+import DashboardPage from './pages/dashboard';
+import './App.css';
+//import "./styles/index.less"
+//import 'rsuite/dist/rsuite.min.css';
+
+import { AuthProvider } from './contexts/auth';
 interface AppProps {
   element: HTMLElement | null;
 }
 
+//export const DefaultLayout: FC<DefaultLayoutProps> = props => {
 
-function AppRoute() {
-
-  console.log('%c: AppRoute', 'color:yellow' )
-  return (
-<Route path="/" element={<Home />} />
-  );
-
-};
-
-function AuthRoute() {
-  console.log('%c: AuthRoute', 'color:yellow' )
-  return (
-<Route path="/login" element={<Login />}/>
-  );
-
-};
-
+//const App <AppProps>= () => {
 function App({ element }: AppProps) {
-
-  const { signed } = useAuth();
   return (
     <BrowserRouter>
-    <AuthProvider>
-    <DefaultLayout>
-      <Routes>
-        {/* <MainRoutes/> */}
-      {/* {signed ? AppRoute() :  AuthRoute()} */}
-
-       <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} /> 
-      </Routes>  
-    
-      </DefaultLayout>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<DefaultLayout />}>
+            <Route index element={<DashboardPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+          </Route>
+          <Route path="*" element={<Error404Page />} />
+        </Routes>
       </AuthProvider>
     </BrowserRouter>
   );
-};
+}
 
 export default App;
