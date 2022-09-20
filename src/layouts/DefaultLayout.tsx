@@ -3,6 +3,7 @@ import { Outlet, Link } from 'react-router-dom';
 import HomeIcon from '@rsuite/icons/legacy/Home';
 import { Container, Sidebar, Sidenav, Content, Nav, DOMHelper, Row } from 'rsuite';
 import { Icon } from '@rsuite/icons';
+import Header from './Header';
 
 import NavLink from '../component/NavLink';
 
@@ -24,19 +25,11 @@ const NavItem = (props: any) => {
 export const DefaultLayout: FC<DefaultLayoutProps> = props => {
   return (
     <Container className="frame">
-      <Row>
+      {/* <Row>
         <div className="menu-bar">
           <Nav>
-            {/* <Nav.Item key="/" icon={<HomeIcon />}>
-              Home
-            </Nav.Item> */}
-            <NavItem
-              key="dashboard"
-              title="Dashboard"
-              to="/dashboard"
-              icon={<HomeIcon />}
-            />
-            {/* <Nav.Item key="dashboard">Dashboard</Nav.Item> */}
+            <NavItem key="dashboard" title="Dashboard" to="/dashboard" icon={<HomeIcon />} />
+
             <Nav.Item key="home">home</Nav.Item>
             <Nav.Item>Products</Nav.Item>
             <Nav.Menu title="Item E">
@@ -52,7 +45,8 @@ export const DefaultLayout: FC<DefaultLayoutProps> = props => {
             </Nav.Menu>
           </Nav>
         </div>
-      </Row>
+      </Row> */}
+      <Header />
       <Content>
         <Outlet />
       </Content>
