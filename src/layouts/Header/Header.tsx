@@ -15,12 +15,25 @@ import NoticeIcon from '@rsuite/icons/Notice';
 import HelpOutlineIcon from '@rsuite/icons/HelpOutline';
 import GithubIcon from '@rsuite/icons/legacy/Github';
 import HeartIcon from '@rsuite/icons/legacy/HeartO';
+import { dismissMessage, notifyMessage } from '../../component/Notification/JToast';
 
-const renderAdminSpeaker = ({ onClose, left, top, className }: any, ref: ((instance: HTMLDivElement | null) => void) | React.RefObject<HTMLDivElement> | null | undefined) => {
+const renderAdminSpeaker = (
+  { onClose, left, top, className }: any,
+  ref:
+    | ((instance: HTMLDivElement | null) => void)
+    | React.RefObject<HTMLDivElement>
+    | null
+    | undefined
+) => {
   const handleSelect = (eventKey: any) => {
     onClose();
     console.log(eventKey);
   };
+  function hout() {
+    console.log('%c hout:', 'color:yellow');
+    notifyMessage('Toast: SUCCESS', 'SUCCESS', 4000);
+  }
+
   return (
     <Popover ref={ref} className={className} style={{ left, top }} full>
       <Dropdown.Menu onSelect={handleSelect}>
@@ -34,7 +47,7 @@ const renderAdminSpeaker = ({ onClose, left, top, className }: any, ref: ((insta
         <Dropdown.Item>Feedback</Dropdown.Item>
         <Dropdown.Item divider /> */}
         {/* <Dropdown.Item>Settings</Dropdown.Item> */}
-        <Dropdown.Item>Sign out</Dropdown.Item>
+        <Dropdown.Item onClick={hout}>Sign out</Dropdown.Item>
         {/* <Dropdown.Item
           icon={<HelpOutlineIcon />}
           href="https://rsuitejs.com"

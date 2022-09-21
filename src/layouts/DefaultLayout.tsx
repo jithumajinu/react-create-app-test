@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { ToastContainer } from 'react-toastify';
 import { Outlet, Link } from 'react-router-dom';
 import HomeIcon from '@rsuite/icons/legacy/Home';
 import { Container, Sidebar, Sidenav, Content, Nav, DOMHelper, Row } from 'rsuite';
@@ -47,6 +48,16 @@ export const DefaultLayout: FC<DefaultLayoutProps> = props => {
         </div>
       </Row> */}
       <Header />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={8000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        pauseOnHover
+      />
       <Content>
         <Outlet />
       </Content>
