@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-//import "./index.css";
+import "./index.css";
 // import "./styles/index.less";
 
 
