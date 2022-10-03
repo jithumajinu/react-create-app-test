@@ -1,8 +1,40 @@
-.header {
-  position: absolute;
-  right: 30px;
-  top: 20px;
-  cursor: pointer;
-  z-index: 1;
+:root {
+  --colour1: red;
+  --colour2: white;
+  --speed: 0.5s;
+}
+@keyframes slide {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: 113px;
+  }
+}
+.container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.container .bar {
+  min-height: 10px;
+  border-radius: 10px;
+  width: calc(113px * 4);
+  box-shadow: 0px 10px 13px -6px #2c3e50;
+  background-color: var(--colour2);
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 40px, var(--colour1) 40px, var(--colour1) 80px);
+  animation: slide var(--speed) linear infinite;
+  will-change: background-position;
+}
+@media only screen and (max-width: 450px) {
+  .container .bar {
+    width: calc(113px * 3);
+  }
+}
+@media only screen and (max-width: 350px) {
+  .container .bar {
+    width: calc(113px * 2);
+  }
 }
 /*# sourceMappingURL=styles.css.map */
