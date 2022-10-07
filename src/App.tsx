@@ -18,7 +18,8 @@ interface AppProps {
 //const App <AppProps>= () => {
 function App({ element }: AppProps) {
   return (
-    <BrowserRouter>
+    //<BrowserRouter basename={process.env.PUBLIC_URL}>
+    <BrowserRouter basename="">
       <AuthProvider>
         <Routes>
           <Route path="/" element={<DefaultLayout />}>

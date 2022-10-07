@@ -1,3 +1,5 @@
+node ./server.js 
+
 ## A react-typescript boilerplate including
 
 - `prettier`

@@ -26,12 +26,12 @@ const NavItem = (props: any) => {
 export const DefaultLayout: FC<DefaultLayoutProps> = props => {
   return (
     <Container className="frame">
-      {/* <Row>
+      <Row>
         <div className="menu-bar">
           <Nav>
             <NavItem key="dashboard" title="Dashboard" to="/dashboard" icon={<HomeIcon />} />
+            <NavItem key="home" title="home" to="/home" icon={<HomeIcon />} />
 
-            <Nav.Item key="home">home</Nav.Item>
             <Nav.Item>Products</Nav.Item>
             <Nav.Menu title="Item E">
               <Nav.Item>Item E-1</Nav.Item>
@@ -46,8 +46,9 @@ export const DefaultLayout: FC<DefaultLayoutProps> = props => {
             </Nav.Menu>
           </Nav>
         </div>
-      </Row> */}
-      <Header />
+        <Header />
+      </Row>
+
       <ToastContainer
         position="bottom-right"
         autoClose={8000}
