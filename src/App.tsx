@@ -1,25 +1,26 @@
 import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { IntlProvider } from 'react-intl';
+import locales from './locales';
 import logo from './logo.svg';
-import './App.css';
+import DefaultLayout from './components/layout';
+import DashboardPage from './pages/dashboard';
+import About from './pages/about';
+import Error404Page from './pages/authentication/404';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter basename="">
+      <Routes>
+        <Route path="/" element={<DefaultLayout />}>
+          <Route index element={<DashboardPage />} />
+          <Route path="/home" element={<DashboardPage />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<DashboardPage />} />
+        </Route>
+        <Route path="*" element={<Error404Page />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
