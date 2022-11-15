@@ -1,6 +1,4 @@
 import _qs from 'qs';
-//const _qs = require('qs');
-
 export class UrlUtil {
   static queryString(qs?: Record<string, any> | undefined | null): string {
     return _qs.stringify(qs);

@@ -1,115 +1,99 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import axios, { AxiosResponse } from 'axios';
-import getUser from '../apiServices/UserApi';
-import { CLAIMS_ROLE } from '../model/consts';
+import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+//import type { Response } from 'axios';
+import axios, { AxiosResponse as Response } from 'axios';
+//import { useHistory, useLocation } from 'react-router-dom';
+import * as sessionsApi from '../apiServices/demo/sessions';
+import * as usersApi from '../apiServices/demo/users';
+
 interface User {
   name: string | null;
   email: string | null;
-  claims: Record<string, any>;
 }
-interface AuthContextData {
-  user: User | null;
-  signed: boolean | null;
+export interface AuthContextType {
+  user: User;
   loading: boolean;
-  signIn(username: string, password: string): Promise<boolean>;
-  canView(area: string): boolean;
-  signOut(): Promise<void>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  error?: Response<any>;
+  login: (email: string, password: string) => void;
+  signUp: (email: string, name: string, password: string) => void;
+  logout: () => void;
 }
-interface AuthProviderProps {
-  children: React.ReactNode;
-}
-export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<any | null>(null);
-  // const [user, setUser] = useState<User | null>(null);
-  const [signed, setSigned] = useState<boolean | null>(null);
-  const [loading, setLoading] = useState(true);
+
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+
+export function AuthProvider({ children }: { children: ReactNode }): JSX.Element {
+  const [user, setUser] = useState<User>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [error, setError] = useState<Response<any> | null>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
+  // const history = useHistory();
+  // const location = useLocation();
+
+  //   useEffect(() => {
+  //     if (error) setError(null);
+  //     // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   }, [location.pathname]);
+
   useEffect(() => {
-    let signed = AuthService.isValid();
-    if (signed) {
-      let name = AuthService.getFullName();
-      let email = AuthService.getUserEmail();
-      let claims: Record<string, any> = AuthService.getUserClaims();
-      let user: User = { name, email, claims };
-      console.log('user-info', JSON.stringify(user));
-      setUser(user);
-      setSigned(signed);
-      setLoading(false);
-    } else {
-      tryLogin(); // TODO not sure it should be located here...
-      setLoading(false);
-    }
+    usersApi
+      .getCurrentUser()
+      .then((newUser: React.SetStateAction<User | undefined>) => setUser(newUser))
+      .catch((_error: any) => {})
+      .finally(() => setLoadingInitial(false));
   }, []);
-  // methods //
-  function tryLogin() {
-    console.info('try login (sso)');
-    const ssoUrl = `https/sso`;
-    if (ssoUrl) {
-      axios
-        .get(ssoUrl)
-        .then(ssoLogin)
-        .catch(error => console.warn(error));
-    }
-  }
-  function ssoLogin(response: AxiosResponse) {
-    const headers = response.data;
-    const username = headers['x-nom-gcd-uid'];
-    const password = headers['x-nom-ldap-token'];
-    if (username && password) {
-      signIn(username, password);
-    }
+
+  function login(email: string, password: string) {
+    setLoading(true);
+
+    sessionsApi
+      .login({ email, password })
+      .then((newUser: React.SetStateAction<User | undefined>) => {
+        setUser(newUser);
+        // history.push("/");
+      })
+      .catch((newError: any) => setError(newError))
+      .finally(() => setLoading(false));
   }
 
-  //   async function signIn(username: string, password: string) {
-  //     const isSignedIn = await AuthService.login({ username, password });
-  //     if (isSignedIn) {
-  //       let name = AuthService.getFullName();
-  //       let email = AuthService.getUserEmail();
-  //       let claims: Record<string, any> = AuthService.getUserClaims();
-  //       let user: User = { name, email, claims };
-  //       setUser(user);
-  //       setSigned(true);
-  //       return true;
-  //     }
-  //     return false;
-  //   }
+  function signUp(email: string, name: string, password: string) {
+    setLoading(true);
 
-  async function signIn(username: string, password: string) {
-    const result = await getUser(user);
-    setUser(result);
-    setSigned(true);
-    return result;
+    usersApi
+      .signUp({ email, name, password })
+      .then((newUser: any) => {
+        setUser(newUser);
+        //  history.push("/");
+      })
+      .catch((newError: any) => setError(newError))
+      .finally(() => setLoading(false));
   }
 
-  //   async function doLogin(dispatch, user) {
-  //     try {
-  //       dispatch({ status: 'pending' });
-
-  //       const result = await getUser(user);
-  //       dispatch({
-  //         status: 'resolved',
-  //         user: result,
-  //         error: null,
-  //       });
-  //     } catch (error) {
-  //       dispatch({ status: 'rejected', error });
-  //     }
-  //   }
-
-  async function signOut() {
-    await AuthService.logout();
-    setUser(null);
-    setSigned(false);
+  function logout() {
+    sessionsApi.logout().then(() => setUser(undefined));
   }
-  const canView = (area: string) => {
-    return AuthService.hasRole(CLAIMS_ROLE.VIEWERS, area);
-  };
+
+  // Make the provider update only when it should
+  const memoedValue = useMemo(
+    () => ({
+      user,
+      loading,
+      error,
+      login,
+      signUp,
+      logout,
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [user, loading, error]
+  );
+
   return (
-    <AuthContext.Provider value={{ signed, loading, user, signIn, signOut, canView }}>
-      {children}
+    <AuthContext.Provider value={memoedValue as AuthContextType}>
+      {!loadingInitial && children}
     </AuthContext.Provider>
   );
-};
-export function useAuth() {
+}
+
+export default function useAuth(): AuthContextType {
   return useContext(AuthContext);
 }

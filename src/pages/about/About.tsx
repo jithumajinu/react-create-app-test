@@ -12,8 +12,12 @@ import {
   Tooltip,
   InputGroup,
   DatePicker,
-  DateRangePicker
+  DateRangePicker,
 } from 'rsuite';
+
+import useAuth from '../../context/useAuth';
+
+import { useAppContext } from '../../context/AppContext';
 
 function asyncCheckUsername(name: string) {
   return new Promise(resolve => {
@@ -84,6 +88,19 @@ function DateField() {
 }
 
 const About = () => {
+  const { authUser } = useAppContext();
+
+  console.log('%c:authUser', 'color:yellow', authUser);
+  const { login, loading, error } = useAuth();
+
+  // function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  //   event.preventDefault();
+
+  //   const formData = new FormData(event.currentTarget);
+
+  //   login(formData.get('email') as string, formData.get('password') as string);
+  // }
+
   const styles = {
     width: 300,
     marginBottom: 10,
