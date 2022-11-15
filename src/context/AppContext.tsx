@@ -1,5 +1,4 @@
 import React, { PropsWithChildren } from 'react';
-//import { useAcModal, AcModalProvider } from '@aperza/ac-ui';
 import { UseAppMethods } from '../hook/UseApp';
 
 export const AppContext = React.createContext<UseAppMethods | null>(null);
