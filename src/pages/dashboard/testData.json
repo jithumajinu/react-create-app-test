@@ -1,0 +1,7 @@
+[
+  { "type": "MASTER", "id": 1, "department": "Beauty", "expanded": false },
+  { "type": "MASTER", "id": 2, "department": "Music", "expanded": false },
+  { "type": "MASTER", "id": 3, "department": "Computers", "expanded": false },
+  { "type": "MASTER", "id": 4, "department": "Tools", "expanded": false },
+  { "type": "MASTER", "id": 5, "department": "Sports", "expanded": false }
+]

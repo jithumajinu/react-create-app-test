@@ -21,14 +21,16 @@ import {
   DatePicker,
   DateRangePicker,
 } from 'rsuite';
-import useAuth from '../../context/useAuth';
+import useAuth from '../../context/AuthContext';
+//import useAuth from '@src/context/useAuth';
+
 import { useAppContext } from '../../context/AppContext';
 
 const About = () => {
   const { authUser } = useAppContext();
 
   console.log('%c:authUser', 'color:yellow', authUser);
-  const { login, loading, error } = useAuth();
+ // const { login, loading, error } = useAuth();
 
   // function handleSubmit(event: FormEvent<HTMLFormElement>) {
   //   event.preventDefault();

@@ -1,22 +1,24 @@
+import AuthService from 'apiServices/demo/authservice';
 import { ApiRestService } from '../../common/ApiRestService';
 import { Authentication } from '../../common/Authentication';
-export class LoginService extends ApiRestService {
+
+export class CustomerService extends ApiRestService {
   toHeaders() {
     let headers: Record<string, any> = {};
     headers['Authorization'] = ''; //AuthService.getAutherizaion();
     return headers;
   }
 
-  async login(_usernameOrEmail: string, _password: string) {
-    const _body = {
-      usernameOrEmail: _usernameOrEmail,
-      password: _password,
-    };
+  async findAll() {
+    return 'test';
+  }
 
-    return this.post({
+  async findAllItems(_qs: any) {
+    return this.get({
       baseURL: 'http://localhost:8070/api',
-      path: '/auth/signin',
-      body: _body,
+      path: '/laptop/all-laptop',
+      //path: 'https://datausa.io/api/data?drilldowns=Nation&measures=Population',
+      qs: _qs,
       headers: this.toHeaders(),
     });
   }

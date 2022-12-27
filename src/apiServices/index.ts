@@ -1,3 +1,3 @@
-import { RestApiService } from './RestApiService';
+import { ApiService } from './ApiService';
 
-export { RestApiService };
+export { ApiService };

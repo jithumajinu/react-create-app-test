@@ -21,6 +21,19 @@ body {
   background: #f5f8fa;
 }
 
+.cell-expand-classname{
+  /* needed on chrome */
+  float: right;
+  float: inline-end;
+  display: table;
+  block-size: 100%;
+  > span {
+    display: table-cell;
+    vertical-align: middle;
+    cursor: pointer;
+  }
+}
+
 .text-muted {
   color: @B700;
 }

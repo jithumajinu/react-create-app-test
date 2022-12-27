@@ -1,9 +1,7 @@
 const path = require('path');
-const CracoAlias = require("craco-alias");
+const CracoAlias = require('craco-alias');
 const CracoLessPlugin = require('craco-less');
 const BUILD_PATH = path.resolve(__dirname, './build');
-
-//import { ErrorPage } from './components/ErrorPage';
 
 module.exports = {
   plugins: [
@@ -17,7 +15,7 @@ module.exports = {
             modifyVars: { '@primary-color': '#018a9e' },
           },
         },
-        baseUrl: './src',
+        baseUrl: './',
         source: 'tsconfig',
       },
     },
@@ -29,6 +27,9 @@ module.exports = {
         filename: 'static/js/[name].js',
         chunkFilename: 'static/js/[name].chunk.js',
       },
+    },
+    alias: {
+      '@src': path.resolve(__dirname, 'src'),
     },
   },
 };

@@ -8,6 +8,7 @@ import NavToggle from '../NavToggle';
 
 import { Icon } from '@rsuite/icons';
 import CubesIcon from '@rsuite/icons/legacy/Cubes';
+import { AuthProvider } from '../../context/AuthContext';
 
 const { getHeight, on } = DOMHelper;
 
@@ -58,44 +59,46 @@ const DefaultLayout = (props: DefaultLayoutProps) => {
 
   return (
     <>
-      <Row className="laout-header">
-        <Brand />
-        <NavbarItems />
-      </Row>
+      <AuthProvider>
+        <Row className="laout-header">
+          <Brand />
+          <NavbarItems />
+        </Row>
 
-      <Container className="frame">
-        <Sidebar
-          style={{ display: 'flex', flexDirection: 'column' }}
-          width={expand ? 260 : 56}
-          collapsible
-        >
-          {/* <Sidenav.Header>
+        <Container className="frame">
+          <Sidebar
+            style={{ display: 'flex', flexDirection: 'column' }}
+            width={expand ? 260 : 56}
+            collapsible
+          >
+            {/* <Sidenav.Header>
           <Brand />
         </Sidenav.Header> */}
-          <Sidenav expanded={expand} appearance="subtle" defaultOpenKeys={['2', '3']}>
-            <Sidenav.Body style={navBodyStyle}>
-              <Nav>
-                <Nav.Item as={BaseNavLink} key="home" to="/home" icon={<CubesIcon />}>
-                  Home
-                </Nav.Item>
-                <Nav.Item as={BaseNavLink} key="about" to="/about" icon={<CubesIcon />}>
-                  About
-                </Nav.Item>
-                <Nav.Item as={BaseNavLink} key="contact" to="/contact" icon={<CubesIcon />}>
-                  Contact
-                </Nav.Item>
-              </Nav>
-            </Sidenav.Body>
-          </Sidenav>
-          <NavToggle expand={expand} onChange={() => setExpand(!expand)} />
-        </Sidebar>
+            <Sidenav expanded={expand} appearance="subtle" defaultOpenKeys={['2', '3']}>
+              <Sidenav.Body style={navBodyStyle}>
+                <Nav>
+                  <Nav.Item as={BaseNavLink} key="home" to="/home" icon={<CubesIcon />}>
+                    Home
+                  </Nav.Item>
+                  <Nav.Item as={BaseNavLink} key="about" to="/about" icon={<CubesIcon />}>
+                    About
+                  </Nav.Item>
+                  <Nav.Item as={BaseNavLink} key="contact" to="/contact" icon={<CubesIcon />}>
+                    Contact
+                  </Nav.Item>
+                </Nav>
+              </Sidenav.Body>
+            </Sidenav>
+            <NavToggle expand={expand} onChange={() => setExpand(!expand)} />
+          </Sidebar>
 
-        <Container className={containerClasses}>
-          <Content>
-            <Outlet />
-          </Content>
+          <Container className={containerClasses}>
+            <Content>
+              <Outlet />
+            </Content>
+          </Container>
         </Container>
-      </Container>
+      </AuthProvider>
     </>
   );
 };

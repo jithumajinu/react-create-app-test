@@ -1,124 +1,164 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo, useRef, CSSProperties } from 'react';
+//import { css } from '@linaria/core';
 import { Grid, Row, Col, Panel, DOMHelper, Table, Pagination } from 'rsuite';
 import { mockUsers } from '../../mock';
+import { ApiService } from '../../apiServices';
+import { faker } from '@faker-js/faker';
 
-import { RestApiService } from '../../apiServices';
+import DataGrid, { SelectColumn } from 'react-data-grid';
+import type { Column, RowsChangeData, DataGridHandle } from 'react-data-grid';
+import { CellExpanderFormatter } from '../../components/Formatters/CellExpanderFormatter';
 
-const { Column, HeaderCell, Cell } = Table;
-const { getHeight } = DOMHelper;
+let testMasterJson = require('./testData.json');
+let productJson = require('./product.json');
+type DepartmentRow =
+  | {
+      type: 'MASTER';
+      id: number;
+      department: string;
+      expanded: boolean;
+    }
+  | {
+      type: 'DETAIL';
+      id: number;
+      parentId: number;
+    };
 
-const _data: any = mockUsers(10);
+interface ProductRow {
+  id: number;
+  pid: number;
+  product: string;
+  description: string;
+  price: string;
+}
 
-export type LayoutType = 'total' | '-' | 'pager' | '|' | 'limit' | 'skip';
-export type Size = 'lg' | 'md' | 'sm' | 'xs';
+// function createDepartments(): readonly DepartmentRow[] {
+//   const departments: DepartmentRow[] = [];
+//   for (let i = 1; i < 6; i++) {
+//     departments.push({
+//       type: 'MASTER',
+//       id: i,
+//       department: faker.commerce.department(),
+//       expanded: false,
+//     });
+//   }
 
-const restApi: RestApiService = RestApiService.getInstance();
+//   console.log('%c departments:', 'color:yellow', JSON.stringify(departments));
+//   return departments;
+// }
+
+const productColumns: readonly Column<ProductRow>[] = [
+  SelectColumn,
+  { key: 'id', name: 'ID', width: 35 },
+  { key: 'product', name: 'Product' },
+  { key: 'description', name: 'Description' },
+  { key: 'price', name: 'Price' },
+];
+
+const restApi: ApiService = ApiService.getInstance();
 
 const Dashboard = () => {
-  const data: any = {
-    data: {
-      pageSize: 10,
-      pageNumber: 1,
-      totalPages: 28,
-      previous: false,
-      next: true,
-      totalCount: 273,
-      content: _data,
-      paginationContent: null,
-      hasData: true,
-      pagingArea: true,
-    },
-    error: null,
-    hasData: true,
-    hasError: false,
+  const columns = useMemo((): readonly Column<DepartmentRow>[] => {
+    return [
+      {
+        key: 'expanded',
+        name: '',
+        minWidth: 30,
+        width: 30,
+        colSpan(args) {
+          return args.type === 'ROW' && args.row.type === 'DETAIL' ? 3 : undefined;
+        },
+        cellClass(row) {
+          return row.type === 'DETAIL' ? 'padding: 24px;' : undefined;
+        },
+        formatter({ row, isCellSelected, onRowChange }) {
+          if (row.type === 'DETAIL') {
+            return (
+              <ProductGrid
+                isCellSelected={isCellSelected}
+                parentId={row.parentId}
+                direction="ltr"
+              />
+            );
+          }
+
+          return (
+            <CellExpanderFormatter
+              expanded={row.expanded}
+              isCellSelected={isCellSelected}
+              onCellExpand={() => {
+                onRowChange({ ...row, expanded: !row.expanded });
+              }}
+            />
+          );
+        },
+      },
+      SelectColumn,
+      { key: 'id', name: 'ID', width: 35 },
+      { key: 'department', name: 'Department' },
+    ];
+  }, []);
+
+  //const [rows, setRows] = useState(createDepartments);
+  const [rows, setRows] = useState(testMasterJson);
+
+  function onRowsChange(rows: DepartmentRow[], { indexes }: RowsChangeData<DepartmentRow>) {
+    const row = rows[indexes[0]];
+    if (row.type === 'MASTER') {
+      if (!row.expanded) {
+        rows.splice(indexes[0] + 1, 1);
+      } else {
+        console.log('%c expand:', 'color:yellow', row.id);
+        rows.splice(indexes[0] + 1, 0, {
+          type: 'DETAIL',
+          id: row.id + 100,
+          parentId: row.id,
+        });
+      }
+      console.log('%crows:', 'color:yellow', rows);
+      setRows(rows);
+    }
+  }
+
+  const renderStyle = () => {
+    const styles: CSSProperties = {};
+    styles.width = 'auto';
+    styles.height = '50%';
+    return styles;
   };
 
-  // pagination
-  const limitOptions = [30, 50, 100];
-
-  const [prev, setPrev] = useState(true);
-  const [next, setNext] = useState(true);
-  const [first, setFirst] = useState(true);
-  const [last, setLast] = useState(true);
-  const [ellipsis, setEllipsis] = useState(true);
-  const [boundaryLinks, setBoundaryLinks] = useState(true);
-  const [activePage, setActivePage] = useState(1);
-  const [size, setSize] = useState<Size>('xs');
-  const [maxButtons, setMaxButtons] = useState(5);
-  const [total, setTotal] = useState(data.data.totalCount);
-  const [layout, setLayout] = useState<LayoutType[]>(['pager', 'skip']);
-  // const [layout, setLayout] = useState<LayoutType[]>(['total', '-', 'limit', '|', 'pager', 'skip']);
-  const [limit, setLimit] = useState(50);
-
-  const testData = restApi.loginService.findAll();
-
-  console.log('%c testData:', 'color:yellow', testData);
+  const handleClick = async (id: number) => {
+    console.log('%c console handleClick:', 'color:yellow');
+    const qs = {
+      drilldowns: 'Nation',
+      measures: 'Population',
+    };
+    const { data } = await restApi.customerService.findAllItems(qs);
+    if (data) {
+      console.log('%cdata:', 'color:yellow', data);
+    }
+  };
 
   return (
     <Panel className="rs-panel-main" header={<h3 className="title">Dashboard</h3>}>
       <Panel className="rs-panel-content">
         <Grid fluid>
+          <button onClick={() => handleClick(1)}>click</button>
           <Row>
-            <Table
-              virtualized
-              height={Math.max(getHeight(window) - 150, 400)}
-              data={data.data.content}
-            >
-              <Column width={70} align="center" fixed>
-                <HeaderCell>Id</HeaderCell>
-                <Cell dataKey="id" />
-              </Column>
-
-              <Column width={130}>
-                <HeaderCell>First Name</HeaderCell>
-                <Cell dataKey="firstName" />
-              </Column>
-
-              <Column width={130}>
-                <HeaderCell>Last Name</HeaderCell>
-                <Cell dataKey="lastName" />
-              </Column>
-
-              <Column width={100}>
-                <HeaderCell>Gender</HeaderCell>
-                <Cell dataKey="gender" />
-              </Column>
-
-              <Column width={100}>
-                <HeaderCell>Age</HeaderCell>
-                <Cell dataKey="age" />
-              </Column>
-
-              <Column width={200}>
-                <HeaderCell>City</HeaderCell>
-                <Cell dataKey="city" />
-              </Column>
-
-              <Column minWidth={200} flexGrow={1}>
-                <HeaderCell>Email</HeaderCell>
-                <Cell dataKey="email" />
-              </Column>
-            </Table>
+            <DataGrid
+              style={renderStyle()}
+              rowKeyGetter={rowKeyGetter}
+              columns={columns}
+              rows={rows}
+              onRowsChange={onRowsChange}
+              headerRowHeight={45}
+              rowHeight={args => (args.type === 'ROW' && args.row.type === 'DETAIL' ? 300 : 45)}
+              className="fill-grid"
+              enableVirtualization={false}
+              direction="ltr"
+            />
+            test
           </Row>
-          <Pagination
-            layout={layout}
-            size={size}
-            prev={prev}
-            next={next}
-            first={first}
-            last={last}
-            ellipsis={ellipsis}
-            boundaryLinks={boundaryLinks}
-            total={total}
-            limit={limit}
-            limitOptions={limitOptions}
-            maxButtons={maxButtons}
-            activePage={activePage}
-            onChangePage={setActivePage}
-            onChangeLimit={setLimit}
-          />
-
-          {/* <Pagination total={100} limit={10} activePage={activePage} onChangePage={setActivePage} /> */}
         </Grid>
       </Panel>
     </Panel>
@@ -126,3 +166,121 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+const productsMap = new Map<number, readonly ProductRow[]>();
+
+function getProducts(parentId: number): readonly ProductRow[] {
+  if (productsMap.has(parentId)) return productsMap.get(parentId)!;
+
+  // const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+  // wait(30000);
+  const qs = {
+    drilldowns: 'Nation',
+    measures: 'Population',
+  };
+  const testData = restApi.customerService.findAllItems(qs);
+  console.log('%c print:', 'color:yellow', testData);
+
+  const products: ProductRow[] = productJson;
+  //const products: ProductRow[] = [];
+
+  // for (let i = 0; i < 3; i++) {
+  //   products.push({
+  //     id: i,
+  //     product: faker.commerce.productName(),
+  //     description: faker.commerce.productDescription(),
+  //     price: faker.commerce.price(),
+  //   });
+  // }
+
+  // console.log('%cproducts:', 'color:yellow', JSON.stringify(products));
+
+  productsMap.set(parentId, products);
+  console.log('%c print2:', 'color:yellow');
+  return products;
+}
+
+function ProductGrid({
+  parentId,
+  isCellSelected,
+  direction,
+}: {
+  parentId: number;
+  isCellSelected: boolean;
+  direction: any;
+}) {
+  const gridRef = useRef<DataGridHandle>(null);
+  const [products, setProducts] = useState();
+
+  const [products2, setProducts2] = useState();
+  const [loading, setLoading] = useState(true);
+
+  const handleGetProduct = async (id: number) => {
+    console.log('%c console handleClick:', 'color:yellow');
+    const qs = {
+      drilldowns: 'Nation',
+      measures: 'Population',
+    };
+    const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+    await wait(3000);
+    const { data, loaded } = await restApi.customerService.findAllItems(qs);
+    if (data) {
+      setProducts2(data);
+      setProducts(productJson);
+      console.log('%cdata:', 'color:yellow', data);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (!isCellSelected) return;
+    gridRef
+      .current!.element!.querySelector<HTMLDivElement>('[tabindex="0"]')!
+      .focus({ preventScroll: true });
+  }, [isCellSelected]);
+
+  useEffect(() => {
+    if (parentId) {
+      handleGetProduct(parentId);
+      // const qs = {
+      //   drilldowns: 'Nation',
+      //   measures: 'Population',
+      // };
+      // const testData = restApi.customerService.findAllItems(qs);
+      // //setProducts2(testData);
+      // console.log('%c testData:', 'color:yellow', testData);
+      // setProducts(productJson);
+    }
+  }, []);
+  //const products = getProducts(parentId);
+
+  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (event.isDefaultPrevented()) {
+      event.stopPropagation();
+    }
+  }
+
+  if (loading) {
+    return <div onKeyDown={onKeyDown}>loading</div>;
+  }
+
+  return (
+    <div onKeyDown={onKeyDown}>
+      {products && (
+        <DataGrid
+          ref={gridRef}
+          rows={products}
+          columns={productColumns}
+          rowKeyGetter={rowKeyGetter}
+          style={{ blockSize: 250 }}
+          direction="ltr"
+        />
+      )}
+    </div>
+  );
+}
+
+function rowKeyGetter(row: DepartmentRow | ProductRow) {
+  return row.id;
+}
